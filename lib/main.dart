@@ -2,6 +2,7 @@ import 'package:bookify/app/router.dart';
 import 'package:bookify/providers/auth_provider.dart';
 import 'package:bookify/providers/book_provider.dart';
 import 'package:bookify/providers/rental_provider.dart';
+import 'package:bookify/providers/theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -17,6 +18,7 @@ class Bookify extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (_) => ThemeProvider(ThemeData.light())),
         ChangeNotifierProvider(create: (_) => AuthProvider()),
         ChangeNotifierProvider(create: (_) {
           final provider = BookProvider();
@@ -29,10 +31,22 @@ class Bookify extends StatelessWidget {
           return provider; // Ensure rentals are loaded on startup
         }),
       ],
-      child: MaterialApp.router(
-        title: 'Bookify',
-        debugShowCheckedModeBanner: false,
-        routerConfig: router,
+      child: Consumer<ThemeProvider>(
+        builder: (BuildContext context, themeProvider, Widget? child) {
+          return MaterialApp.router(
+            title: 'Bookify',
+            debugShowCheckedModeBanner: false,
+            routerConfig: router,
+            themeMode: Provider.of<ThemeProvider>(context, listen: false)
+                        .themeData
+                        .brightness ==
+                    Brightness.dark
+                ? ThemeMode.dark
+                : ThemeMode.light,
+            darkTheme:
+                Provider.of<ThemeProvider>(context, listen: false).darkTheme,
+          );
+        },
       ),
     );
   }

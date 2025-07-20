@@ -1,4 +1,5 @@
 import 'package:bookify/providers/rental_provider.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -21,9 +22,10 @@ class ProfileScreen extends StatelessWidget {
                   final rental = rentals[index];
                   return Card(
                     child: ListTile(
+                      leading: Icon(CupertinoIcons.book),
                       title: Text(rental.bookTitle),
                       subtitle: Text(
-                          "Rented on: ${rental.date.toLocal()}".split(' ')[0]),
+                          "Date: ${rental.date.toLocal().toString().split(' ')[0]}\nStatus: ${rental.status.name}"),
                     ),
                   );
                 },

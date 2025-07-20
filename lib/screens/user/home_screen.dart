@@ -1,5 +1,6 @@
 import 'package:bookify/models/book_model.dart';
 import 'package:bookify/providers/book_provider.dart';
+import 'package:bookify/providers/theme_provider.dart';
 import 'package:bookify/widgets/book_card.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -50,6 +51,15 @@ class _HomeScreenState extends State<HomeScreen> {
               title: const Text('Home'),
               onTap: () {
                 context.push('/home');
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.nightlight_round),
+              title: const Text('Night Mode'),
+              onTap: () {
+                final themeProvider =
+                    Provider.of<ThemeProvider>(context, listen: false);
+                themeProvider.toggleTheme();
               },
             ),
             ListTile(

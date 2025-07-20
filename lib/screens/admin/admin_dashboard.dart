@@ -27,17 +27,17 @@ class AdminDashboard extends StatelessWidget {
               ),
             ),
             ListTile(
-              leading: const Icon(Icons.book),
-              title: const Text('Manage Books'),
-              onTap: () {
-                context.push('/admin/books');
-              },
-            ),
-            ListTile(
               leading: const Icon(Icons.list_alt),
               title: const Text('Manage Rentals'),
               onTap: () {
                 context.push('/admin/rentals');
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.logout_rounded),
+              title: const Text('Logout'),
+              onTap: () {
+                context.go('/');
               },
             ),
           ],
@@ -78,8 +78,6 @@ class AdminDashboard extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          print(bookProvider.books);
-
           Navigator.push(
             context,
             MaterialPageRoute(builder: (_) => const ManageBookScreen()),

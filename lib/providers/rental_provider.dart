@@ -12,14 +12,14 @@ class RentalProvider with ChangeNotifier {
     final data = await DatabaseHelper().getRentals();
     _rentals.clear();
     _rentals.addAll(data.map((e) => Rental(
-      id: e['id'],
-      bookTitle: e['bookTitle'],
-      date: DateTime.parse(e['date']),
-      status: RentalStatus.values.firstWhere(
-        (s) => s.name == e['status'],
-        orElse: () => RentalStatus.pending,
-      ),
-    )));
+          id: e['id'],
+          bookTitle: e['bookTitle'],
+          date: DateTime.parse(e['date']),
+          status: RentalStatus.values.firstWhere(
+            (s) => s.name == e['status'],
+            orElse: () => RentalStatus.pending,
+          ),
+        )));
     notifyListeners();
   }
 
@@ -46,7 +46,6 @@ class RentalProvider with ChangeNotifier {
     final rental = _rentals.firstWhere((r) => r.id == id);
     rental.status = status;
     notifyListeners();
-
     await DatabaseHelper().updateStatus(id, status.name);
   }
 }
