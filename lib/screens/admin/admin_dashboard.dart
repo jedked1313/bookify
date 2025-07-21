@@ -1,3 +1,4 @@
+import 'package:bookify/providers/auth_provider.dart';
 import 'package:bookify/providers/book_provider.dart';
 import 'package:bookify/screens/admin/manage_books_screen.dart';
 import 'package:bookify/widgets/book_card.dart';
@@ -37,13 +38,15 @@ class AdminDashboard extends StatelessWidget {
               leading: const Icon(Icons.logout_rounded),
               title: const Text('Logout'),
               onTap: () {
-                context.go('/');
+                final authProvider = Provider.of<AuthProvider>(context, listen: false);
+                authProvider.logout(context: context);
               },
             ),
           ],
         ),
       ),
-      body: Column(
+      body: ListView(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
         children: [
           ElevatedButton.icon(
             icon: const Icon(Icons.list_alt),
@@ -53,26 +56,22 @@ class AdminDashboard extends StatelessWidget {
             },
           ),
           const SizedBox(height: 16),
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: ListView(
-              shrinkWrap: true,
-              children: books
-                  .map(
-                    (book) => BookCard(
-                      book: book,
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => ManageBookScreen(book: book),
-                          ),
-                        );
-                      },
-                    ),
-                  )
-                  .toList(),
-            ),
+          Column(
+            children: books
+                .map(
+                  (book) => BookCard(
+                    book: book,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => ManageBookScreen(book: book),
+                        ),
+                      );
+                    },
+                  ),
+                )
+                .toList(),
           ),
         ],
       ),

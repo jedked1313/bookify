@@ -3,84 +3,33 @@ import 'package:flutter/material.dart';
 import 'package:bookify/models/book_model.dart';
 import 'package:provider/provider.dart';
 
-class BookingScreen extends StatefulWidget {
-  final Book book;
+class BookingScreen extends StatelessWidget {
   const BookingScreen({super.key, required this.book});
-
-  @override
-  State<BookingScreen> createState() => _BookingScreenState();
-}
-
-class _BookingScreenState extends State<BookingScreen> {
-  DateTime? selectedDate;
-
-  void _selectDate() async {
-    final now = DateTime.now();
-    final picked = await showDatePicker(
-      context: context,
-      initialDate: now,
-      firstDate: now,
-      lastDate: now.add(const Duration(days: 365)),
-    );
-
-    if (picked != null) {
-      setState(() {
-        selectedDate = picked;
-      });
-    }
-  }
-
-  void _confirmBooking() {
-    if (selectedDate == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Please select a date")),
-      );
-      return;
-    }
-    Provider.of<RentalProvider>(context, listen: false)
-        .addRentalFromBooking(widget.book.title, selectedDate!);
-    // Store booking in provider/local db
-    showDialog(
-      context: context,
-      builder: (_) => AlertDialog(
-        title: const Text("Booking Confirmed"),
-        content: Text(
-            "You've booked '${widget.book.title}' on ${selectedDate!.toLocal()}"),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.of(context)
-                ..pop()
-                ..pop(); // Go back to Home
-            },
-            child: const Text("OK"),
-          )
-        ],
-      ),
-    );
-  }
+  final Book book;
 
   @override
   Widget build(BuildContext context) {
+    var rentalProvider = Provider.of<RentalProvider>(context);
     return Scaffold(
       appBar: AppBar(title: const Text("Confirm Booking")),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            Text("Book: ${widget.book.title}"),
+            Text("Book: ${book.title}"),
             const SizedBox(height: 16),
             ListTile(
               title: const Text("Pick a rental date"),
-              subtitle: Text(selectedDate == null
+              subtitle: Text(rentalProvider.selectedDate == null
                   ? "No date selected"
-                  : "${selectedDate!.toLocal()}".split(' ')[0]),
+                  : "${rentalProvider.selectedDate!.toLocal()}".split(' ')[0]),
               trailing: const Icon(Icons.calendar_today),
-              onTap: _selectDate,
+              onTap: () => rentalProvider.selectDate(context),
             ),
             const Spacer(),
             ElevatedButton(
-              onPressed: _confirmBooking,
+              onPressed: () =>
+                  rentalProvider.confirmBooking(context, book.title),
               child: const Text("Confirm Booking"),
             ),
           ],

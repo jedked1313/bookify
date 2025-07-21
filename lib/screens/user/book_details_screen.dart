@@ -4,9 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class BookDetailsScreen extends StatelessWidget {
-  final String bookId;
-
   const BookDetailsScreen({super.key, required this.bookId});
+  final String bookId;
 
   @override
   Widget build(BuildContext context) {
@@ -20,19 +19,23 @@ class BookDetailsScreen extends StatelessWidget {
       appBar: AppBar(title: Text(book.title)),
       body: Padding(
         padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: ListView(
           children: [
-            Image.network(book.imageUrl, height: 200, width: double.infinity, fit: BoxFit.cover),
+            Image.network(book.imageUrl,
+                height: MediaQuery.of(context).size.height / 2,
+                width: double.infinity,
+                fit: BoxFit.cover),
             const SizedBox(height: 16),
             Text(book.title, style: Theme.of(context).textTheme.headlineSmall),
-            Text("by ${book.author}", style: Theme.of(context).textTheme.bodyLarge),
+            Text("by ${book.author}",
+                style: Theme.of(context).textTheme.bodyLarge),
             const SizedBox(height: 8),
             Text("Rating: ⭐ ${book.rating}"),
             const SizedBox(height: 16),
             Text(book.description),
             const SizedBox(height: 16),
-            Text("Availability: ${book.isAvailable ? 'Available' : 'Not Available'}"),
+            Text(
+                "Availability: ${book.isAvailable ? 'Available' : 'Not Available'}"),
             const Spacer(),
             if (book.isAvailable)
               SizedBox(

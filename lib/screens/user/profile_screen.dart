@@ -9,7 +9,6 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final rentals = Provider.of<RentalProvider>(context).rentals;
-
     return Scaffold(
       appBar: AppBar(title: const Text("My Profile")),
       body: Padding(

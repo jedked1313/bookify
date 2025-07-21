@@ -8,16 +8,19 @@ import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(const Bookify());
+  final authProvider = AuthProvider();
+  runApp(Bookify(authProvider: authProvider));
 }
 
 class Bookify extends StatelessWidget {
-  const Bookify({super.key});
+  final AuthProvider authProvider;
+  const Bookify({super.key, required this.authProvider});
 
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        ChangeNotifierProvider<AuthProvider>.value(value: authProvider),
         ChangeNotifierProvider(create: (_) => ThemeProvider(ThemeData.light())),
         ChangeNotifierProvider(create: (_) => AuthProvider()),
         ChangeNotifierProvider(create: (_) {
@@ -43,6 +46,8 @@ class Bookify extends StatelessWidget {
                     Brightness.dark
                 ? ThemeMode.dark
                 : ThemeMode.light,
+            theme:
+                Provider.of<ThemeProvider>(context, listen: false).lightTheme,
             darkTheme:
                 Provider.of<ThemeProvider>(context, listen: false).darkTheme,
           );

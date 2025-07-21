@@ -1,5 +1,6 @@
 import 'package:bookify/models/rental_model.dart';
 import 'package:bookify/providers/rental_provider.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -35,7 +36,17 @@ class AdminRentalOrdersScreen extends StatelessWidget {
                       items: RentalStatus.values
                           .map((s) => DropdownMenuItem(
                                 value: s,
-                                child: Text(s.name),
+                                child: Row(
+                                  children: [
+                                    IconButton(
+                                        onPressed: () =>
+                                            Provider.of<RentalProvider>(context,listen: false)
+                                                .deleteRental(rental.id),
+                                        icon:
+                                            Icon(CupertinoIcons.trash_circle)),
+                                    Text(s.name),
+                                  ],
+                                ),
                               ))
                           .toList(),
                     ),

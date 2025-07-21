@@ -1,4 +1,4 @@
-import 'package:bookify/models/book_model.dart';
+import 'package:bookify/providers/auth_provider.dart';
 import 'package:bookify/providers/book_provider.dart';
 import 'package:bookify/providers/theme_provider.dart';
 import 'package:bookify/widgets/book_card.dart';
@@ -6,23 +6,12 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
-
-  @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
-  String _searchQuery = '';
 
   @override
   Widget build(BuildContext context) {
     final bookProvider = Provider.of<BookProvider>(context);
-    List<Book> books = _searchQuery.isEmpty
-        ? bookProvider.books
-        : bookProvider.searchBooks(_searchQuery);
-
     return Scaffold(
       appBar: AppBar(
         title: const Text("Bookify"),
@@ -37,10 +26,9 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       drawer: Drawer(
         child: ListView(
-          padding: EdgeInsets.zero,
           children: [
             DrawerHeader(
-              decoration: BoxDecoration(color: Colors.blue),
+              decoration: BoxDecoration(color: Colors.blueAccent),
               child: const Text(
                 'User Menu',
                 style: TextStyle(color: Colors.white, fontSize: 24),
@@ -66,42 +54,55 @@ class _HomeScreenState extends State<HomeScreen> {
               leading: const Icon(Icons.logout_rounded),
               title: const Text('Logout'),
               onTap: () {
-                context.go('/');
+                final authProvider =
+                    Provider.of<AuthProvider>(context, listen: false);
+                authProvider.logout(context: context);
+                context.push('/login');
               },
             ),
           ],
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            TextField(
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+            child: TextField(
               decoration: const InputDecoration(
                 labelText: "Search by title or author",
                 prefixIcon: Icon(Icons.search),
-                border: OutlineInputBorder(),
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(12))),
               ),
-              onChanged: (value) => setState(() {
-                _searchQuery = value;
-              }),
+              onChanged: (value) => bookProvider.setSearchQuery(value),
             ),
-            const SizedBox(height: 10),
-            Expanded(
-              child: ListView.builder(
-                itemCount: books.length,
+          ),
+          const SizedBox(height: 10),
+          Expanded(
+            child: Container(
+              padding: const EdgeInsets.only(left: 10, right: 10, top: 20),
+              margin: const EdgeInsets.only(top: 10),
+              decoration: BoxDecoration(
+                color: Provider.of<ThemeProvider>(context).themeData.cardColor,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(40),
+                ),
+              ),
+              child: ListView.separated(
+                separatorBuilder: (context, index) => const Divider(),
+                itemCount: bookProvider.books.length,
                 itemBuilder: (context, index) {
                   return BookCard(
-                    book: books[index],
+                    book: bookProvider.books[index],
                     onTap: () {
-                      context.push('/book/${books[index].id}');
+                      context.push('/book/${bookProvider.books[index].id}');
                     },
                   );
                 },
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

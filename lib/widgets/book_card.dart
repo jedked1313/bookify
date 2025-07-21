@@ -9,15 +9,48 @@ class BookCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
+    return Container(
       margin: const EdgeInsets.symmetric(vertical: 8),
-      child: ListTile(
-        leading: Image.network(book.imageUrl, width: 50, fit: BoxFit.cover),
-        title: Text(book.title),
-        subtitle: Text('${book.author} • ⭐ ${book.rating}'),
-        trailing: Icon(book.isAvailable ? Icons.check : Icons.close,
-            color: book.isAvailable ? Colors.green : Colors.red),
-        onTap: onTap,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10),
+        child: InkWell(
+          onTap: onTap,
+          child: Row(
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: Image.network(
+                  book.imageUrl,
+                  width: 120,
+                  height: 150,
+                  fit: BoxFit.fill,
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(book.title,
+                        style: Theme.of(context).textTheme.titleMedium),
+                    Text(book.author,
+                        style: Theme.of(context).textTheme.bodyMedium),
+                    SizedBox(height: 25),
+                    Text(
+                      'Rating: ⭐ ${book.rating}',
+                      style: Theme.of(context).textTheme.labelLarge,
+                    )
+                  ],
+                ),
+              ),
+              Icon(book.isAvailable ? Icons.check : Icons.close,
+                  color: book.isAvailable ? Colors.green : Colors.red),
+            ],
+          ),
+        ),
       ),
     );
   }
